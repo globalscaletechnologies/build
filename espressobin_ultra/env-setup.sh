@@ -295,7 +295,6 @@ function build_kernel {
 
         cp $kernel/arch/arm64/boot/Image ${BUILDOUT}/boot/
         cp $kernel/arch/arm64/boot/dts/marvell/armada-3720-ccpe*.dtb ${BUILDOUT}/boot/
-        cp $kernel/arch/arm64/boot/dts/marvell/armada-3720-axc300-*.dtb ${BUILDOUT}/boot/
     fi
 }
 
