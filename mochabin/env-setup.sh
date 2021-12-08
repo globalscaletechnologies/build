@@ -199,7 +199,8 @@ function build_kernel {
         fi
     fi
 
-    make -C $kernel gti_mochabin-88f7040_defconfig
+    #make -C $kernel gti_mochabin-88f7040_defconfig
+    make -C $kernel gti_generic_mvebu_defconfig
     make -C $kernel -j4
     make -C $kernel modules_install INSTALL_MOD_PATH=${BUILDOUT}
 
