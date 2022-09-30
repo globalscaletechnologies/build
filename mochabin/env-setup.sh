@@ -120,6 +120,7 @@ function build_uboot {
 function build_atf {
     local platform=$1
     local topology=$2
+    local ecc=${3:-0}
     local blout=$BUILDOUT
 
     if [ "${BUILDTYPE}" == "release" ]; then
@@ -152,7 +153,11 @@ function build_atf {
       return 1
     esac
 
-    make -C $atf DEBUG=0 USE_COHERENT_MEM=0 LOG_LEVEL=10 SECURE=0 PLAT=${platform} DDR_TOPOLOGY=${topology} all fip
+    if [ $ecc -gt 0 ]; then
+        ddr="${ddr}-ecc"
+    fi
+
+    make -C $atf DEBUG=0 USE_COHERENT_MEM=0 LOG_LEVEL=10 SECURE=0 PLAT=${platform} DDR_TOPOLOGY=${topology} ECC_ENABLED=${ecc} all fip
     FLASHOUT=${blout}/${platform}-bootloader-$ddr-mvddr-${DDRGITID}-atf-${ATFGITID}-uboot-${UBOOTGITID}-${DATESTR}.bin
 
     OUTPUTMSG="${OUTPUTMSG}`basename ${FLASHOUT}`\n"
@@ -180,7 +185,11 @@ function build_bootloader {
     # ddr-topology: 0: 1cs-4g, 1: 2cs-8g, 2: 1cs-2g
     for topology in 0 1 2
     do
-        build_atf a70x0_mochabin $topology
+        # without ecc
+        build_atf a70x0_mochabin $topology 0
+
+        # with ecc
+        build_atf a70x0_mochabin $topology 1
     done
 
     printf "\nOutput:\n${OUTPUTMSG}\n"
